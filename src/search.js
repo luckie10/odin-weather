@@ -29,9 +29,32 @@ const LocationSearch = (function () {
     populateLocationOptions(locationSuggestions);
   };
 
+  const validateLocation = (location) => {
+    const response = document.querySelector(
+      `#locations option[value='${location}']`
+    );
+
+    if (response === null) {
+      console.log("Location invalid");
+      return false;
+    }
+    return true;
+  };
+
+  const searchHandler = async (event) => {
+    if (!validateLocation(searchInput.value)) return;
+
+    const forecast = await Weather.getForecast(searchInput.value);
+    console.log(forecast);
+  };
+
+  // TODO:
+  // Keyboard 'Enter' to search
   const attachEventHandlers = () => {
+    const searchButton = document.querySelector(".search-button");
 
     searchInput.addEventListener("input", inputHandler);
+    searchButton.addEventListener("click", searchHandler);
   };
 
   return { attachEventHandlers };
