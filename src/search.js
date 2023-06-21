@@ -1,4 +1,5 @@
 import WeatherAPI from "./weatherapi";
+import WeatherUI from "./weatherui";
 
 const LocationSearch = (function () {
   const searchInput = document.querySelector(".search-input");
@@ -46,6 +47,7 @@ const LocationSearch = (function () {
 
     const forecast = await WeatherAPI.getForecast(searchInput.value);
     console.log(forecast);
+    WeatherUI.loadCurrent(forecast.current);
   };
 
   // TODO:
