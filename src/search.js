@@ -1,4 +1,4 @@
-import Weather from "./weatherapi";
+import WeatherAPI from "./weatherapi";
 
 const LocationSearch = (function () {
   const searchInput = document.querySelector(".search-input");
@@ -25,7 +25,7 @@ const LocationSearch = (function () {
     const input = e.target.value;
     if (input.length < 3) return;
 
-    const locationSuggestions = await Weather.getLocationSuggestions(input);
+    const locationSuggestions = await WeatherAPI.getLocationSuggestions(input);
     populateLocationOptions(locationSuggestions);
   };
 
@@ -44,7 +44,7 @@ const LocationSearch = (function () {
   const searchHandler = async (event) => {
     if (!validateLocation(searchInput.value)) return;
 
-    const forecast = await Weather.getForecast(searchInput.value);
+    const forecast = await WeatherAPI.getForecast(searchInput.value);
     console.log(forecast);
   };
 
