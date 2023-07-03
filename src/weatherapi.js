@@ -31,7 +31,7 @@ const Weather = (function () {
     return fetchData(currentURL);
   }
 
-  async function getForecast(query, aqi = "no", days = "1", alerts = "no") {
+  async function getForecast(query, aqi = "no", days = 1, alerts = "no") {
     const forecastURL = generateURL("forecast", {
       q: query,
       aqi,
