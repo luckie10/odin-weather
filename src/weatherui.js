@@ -81,9 +81,40 @@ const WeatherUI = (() => {
     }
   };
 
+  const generateHourForecast = (hourForecast, metric = true) => {
+    const hour = createElement("div", { class: "hourly-hour" });
+    const time = createElement("div", { class: "hourly-hour" });
+    const condition = createElement("div", { class: "hourly-condition" });
+    const temp = createElement("div", { class: "hourly-temp" });
+
+    time.textContent = hourForecast.time;
+    const conditionIcon = generateConditionIcon(
+      hourForecast.condition.code,
+      hourForecast.is_day
+    );
+    condition.append(conditionIcon);
+    temp.textContent =
+      (metric ? hourForecast.temp_c : hourForecast.temp_f) + "°";
+
+    hour.append(time, condition, temp);
+    return hour;
+  };
+
+  const loadHourlyForecast = (wholeForecast, metric = true) => {
+    console.log(wholeForecast);
+    const forecastList = document.querySelector(".forecast");
+
+    for (const forecast of wholeForecast) {
+      for (const hour of forecast.hour) {
+        forecastList.append(generateHourForecast(hour));
+      }
+    }
+  };
+
   return {
     loadCurrent,
     loadDailyForecast,
+    loadHourlyForecast,
   };
 })();
 
