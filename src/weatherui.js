@@ -1,5 +1,6 @@
 import { svgs } from "./assets/svg";
 import weatherConditions from "./conditioncode.json";
+import { createElement } from "./utils";
 
 const WeatherUI = (() => {
   const getIconName = (conditionCode, day) => {
@@ -9,7 +10,7 @@ const WeatherUI = (() => {
     return day ? condition.icon.day : condition.icon.night;
   };
 
-  const generateConditionIcon = (conditionCode, day) => {
+  const generateConditionIcon = (conditionCode, day = 1) => {
     const iconName = getIconName(conditionCode, day);
     const img = document.createElement("img");
     img.src = svgs[iconName];
@@ -19,7 +20,7 @@ const WeatherUI = (() => {
   const loadCurrent = (currWeather, metric = true) => {
     const weatherWrapper = document.querySelector(".current-weather-wrapper");
     const dateTime = weatherWrapper.querySelector(".date-time");
-    const tempCurrent = weatherWrapper.querySelector(".temp-current");
+    const tempCurrent = weatherWrapper.querySelector(".temp");
     const conditionText = weatherWrapper.querySelector(".condition-text");
     const conditionIcon = weatherWrapper.querySelector(".condition-icon");
     const feelsLike = weatherWrapper.querySelector(".feelslike");
@@ -47,8 +48,42 @@ const WeatherUI = (() => {
       currWeather.wind_dir;
   };
 
+  const generateDayForecast = (forecast) => {
+    const day = createElement("div", { class: "daily-day" });
+    const date = createElement("div", { class: "daily-date" });
+    const condition = createElement("div", { class: "daily-condition" });
+    const max = createElement("div", { class: "daily-max" });
+    const min = createElement("div", { class: "daily-min" });
+
+    date.textContent = forecast.date;
+    const conditionIcon = generateConditionIcon(forecast.condition.code);
+    condition.append(conditionIcon);
+    max.textContent = forecast.max;
+    min.textContent = forecast.min;
+
+    day.append(date, condition, max, min);
+    return day;
+  };
+
+  const loadDailyForecast = (wholeForecast, metric = true) => {
+    const forecastList = document.querySelector(".forecast");
+    for (const forecast of wholeForecast) {
+      const forecastDay = forecast.day;
+      const day = generateDayForecast({
+        date: forecast.date,
+        condition: forecastDay.condition,
+        min: metric ? forecastDay.mintemp_c + "°" : forecastDay.mintemp_f + "°",
+        max: metric
+          ? forecast.day.maxtemp_c + "°"
+          : forecastDay.mintemp_f + "°",
+      });
+      forecastList.append(day);
+    }
+  };
+
   return {
     loadCurrent,
+    loadDailyForecast,
   };
 })();
 
