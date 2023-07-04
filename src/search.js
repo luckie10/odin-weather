@@ -46,17 +46,16 @@ const LocationSearch = (function () {
     if (!validateLocation(searchInput.value)) return;
 
     const forecast = await WeatherAPI.getForecast(searchInput.value);
-    console.log(forecast);
     WeatherUI.loadCurrent(forecast.current);
   };
 
   // TODO:
   // Keyboard 'Enter' to search
   const attachEventHandlers = () => {
-    const searchButton = document.querySelector(".search-button");
-
     searchInput.addEventListener("input", inputHandler);
-    searchButton.addEventListener("click", searchHandler);
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.keyCode === 13) searchHandler(e); // Keycode 13 = Enter
+    });
   };
 
   return { attachEventHandlers };
