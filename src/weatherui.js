@@ -1,6 +1,6 @@
 import { svgs } from "./assets/svg";
 import weatherConditions from "./conditioncode.json";
-import { createElement } from "./utils";
+import { createElement, removeAllChildren } from "./utils";
 
 const WeatherUI = (() => {
   const getIconName = (conditionCode, day) => {
@@ -37,6 +37,7 @@ const WeatherUI = (() => {
       currWeather.condition.code,
       currWeather.is_day
     );
+    removeAllChildren(conditionIcon);
     conditionIcon.append(icon);
 
     feelsLike.textContent = `Feels like ${

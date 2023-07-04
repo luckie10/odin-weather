@@ -19,4 +19,10 @@ function createElement(tagName, attributes) {
   return element;
 }
 
-export { createElement };
+function removeAllChildren(element) {
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
+  }
+}
+
+export { createElement, removeAllChildren };
