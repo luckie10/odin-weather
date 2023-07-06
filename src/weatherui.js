@@ -31,11 +31,10 @@ const WeatherUI = (() => {
     const humidity = weatherWrapper.querySelector(".humidity");
     const wind = weatherWrapper.querySelector(".wind");
 
-    dateTime.textContent = currWeather.last_updated;
-    tempCurrent.textContent = metric
-      ? `${currWeather.temp_c}°C`
-      : `${currWeather.temp_f}°F`;
     location.textContent = `${weatherLocation.name}`;
+    // dateTime.textContent = currWeather.last_updated;
+    tempCurrent.textContent =
+      (metric ? Math.round(currWeather.temp_c) : currWeather.temp_f) + "°";
 
     conditionText.textContent = currWeather.condition.text;
     const icon = generateConditionIcon(
@@ -45,13 +44,14 @@ const WeatherUI = (() => {
     removeAllChildren(conditionIcon);
     conditionIcon.append(icon);
 
-    feelsLike.textContent = `Feels like ${
+    feelsLike.textContent = `Feels like: ${
       metric ? currWeather.feelslike_c : currWeather.feelslike_f
     } °${metric ? "C" : "F"}`;
-    humidity.textContent = currWeather.humidity + "%";
+    humidity.textContent = `Humidity: ${currWeather.humidity}%`;
     wind.textContent =
+      `Wind: ` +
       (metric ? `${currWeather.wind_kph}kph ` : `${currWeather.wind_mph}mph `) +
-      currWeather.wind_dir;
+      `${currWeather.wind_degree}° ${currWeather.wind_dir}`;
   };
 
   const generateDayForecast = (forecast) => {
