@@ -17,8 +17,12 @@ const WeatherUI = (() => {
     return img;
   };
 
-  const loadCurrent = (currWeather, metric = true) => {
+  const loadCurrent = (wholeWeather, metric = true) => {
+    const currWeather = wholeWeather.current;
+    const weatherLocation = wholeWeather.location;
+
     const weatherWrapper = document.querySelector(".current-weather-wrapper");
+    const location = weatherWrapper.querySelector(".current-location");
     const dateTime = weatherWrapper.querySelector(".date-time");
     const tempCurrent = weatherWrapper.querySelector(".temp");
     const conditionText = weatherWrapper.querySelector(".condition-text");
@@ -31,6 +35,7 @@ const WeatherUI = (() => {
     tempCurrent.textContent = metric
       ? `${currWeather.temp_c}°C`
       : `${currWeather.temp_f}°F`;
+    location.textContent = `${weatherLocation.name}`;
 
     conditionText.textContent = currWeather.condition.text;
     const icon = generateConditionIcon(
