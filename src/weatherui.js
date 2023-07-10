@@ -1,6 +1,7 @@
 import { svgs } from "./assets/svg";
 import weatherConditions from "./conditioncode.json";
 import { createElement, removeAllChildren } from "./utils";
+import { format, isPast, isThisHour } from "date-fns";
 
 const WeatherUI = (() => {
   const getIconName = (conditionCode, day) => {
@@ -93,7 +94,8 @@ const WeatherUI = (() => {
     const condition = createElement("div", { class: "hourly-condition" });
     const temp = createElement("div", { class: "hourly-temp" });
 
-    time.textContent = hourForecast.time;
+    const getHour = format(new Date(hourForecast.time), "HH");
+    time.textContent = getHour;
     const conditionIcon = generateConditionIcon(
       hourForecast.condition.code,
       hourForecast.is_day
@@ -107,14 +109,17 @@ const WeatherUI = (() => {
   };
 
   const loadHourlyForecast = (wholeForecast, metric = true) => {
-    console.log(wholeForecast);
-    const forecastList = document.querySelector(".forecast");
+    const hourlyForecast = createElement("div", { class: "hourly-forecast" });
 
     for (const forecast of wholeForecast) {
       for (const hour of forecast.hour) {
-        forecastList.append(generateHourForecast(hour));
+        const time = new Date(hour.time);
+        if (!isPast(time) || isThisHour(time))
+          hourlyForecast.append(generateHourForecast(hour));
       }
     }
+    const forecastList = document.querySelector(".forecast");
+    forecastList.append(hourlyForecast);
   };
 
   return {
