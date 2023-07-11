@@ -43,10 +43,10 @@ const LocationSearch = (function () {
   };
 
   const searchHandler = async (event) => {
-    if (!validateLocation(searchInput.value)) return;
+    // if (!validateLocation(searchInput.value)) return;
 
     const forecast = await WeatherAPI.getForecast(searchInput.value);
-    WeatherUI.loadCurrent(forecast.current);
+    WeatherUI.loadCurrent(forecast);
   };
 
   // TODO:
