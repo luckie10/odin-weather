@@ -83,9 +83,10 @@ const WeatherUI = (() => {
     return day;
   };
 
-    const dailyForecast = createElement("div", { class: "daily-forecast" });
   const loadDailyForecast = (weather, metric = true) => {
     const wholeForecast = weather.forecast.forecastday;
+    const dailyForecast = document.querySelector(".daily-forecast");
+    removeAllChildren(dailyForecast);
 
     for (const forecast of wholeForecast) {
       const forecastDay = forecast.day;
@@ -102,8 +103,6 @@ const WeatherUI = (() => {
       });
       dailyForecast.append(day);
     }
-    const forecastList = document.querySelector(".forecast");
-    forecastList.append(dailyForecast);
   };
 
   const generateHourForecast = (hourForecast, metric = true) => {
@@ -127,20 +126,20 @@ const WeatherUI = (() => {
     return hourlyHour;
   };
 
-    const hourlyForecast = createElement("div", { class: "hourly-forecast" });
   const loadHourlyForecast = (weather, metric = true) => {
     const wholeForecast = weather.forecast.forecastday;
+    const hourlyForecast = document.querySelector(".hourly-forecast");
+    removeAllChildren(hourlyForecast);
 
     for (const forecast of wholeForecast) {
       for (const hour of forecast.hour) {
         const time = new Date(hour.time);
         const localTime = new Date(weather.location.localtime);
+        console.log(localTime);
         if (isAfter(time, localTime) || isSameHour(time, localTime))
           hourlyForecast.append(generateHourForecast(hour, metric));
       }
     }
-    const forecastList = document.querySelector(".forecast");
-    forecastList.append(hourlyForecast);
   };
 
   const loadWeather = (weather, metric = true) => {
