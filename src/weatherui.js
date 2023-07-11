@@ -1,7 +1,7 @@
 import { svgs } from "./assets/svg";
 import weatherConditions from "./conditioncode.json";
 import { createElement, removeAllChildren } from "./utils";
-import { format, isPast, isThisHour } from "date-fns";
+import { format, isPast, isThisHour, isToday, isTomorrow } from "date-fns";
 
 const WeatherUI = (() => {
   const getIconName = (conditionCode, day) => {
@@ -55,42 +55,59 @@ const WeatherUI = (() => {
       `${currWeather.wind_degree}° ${currWeather.wind_dir}`;
   };
 
+  const formatDayDate = (stringDate) => {
+    const date = new Date(`${stringDate}T00:00:00`);
+
+    if (isToday(date)) return "Today";
+    else if (isTomorrow(date)) return "Tomorrow";
+    else return format(date, "E");
+  };
+
   const generateDayForecast = (forecast) => {
     const day = createElement("div", { class: "daily-day" });
+
     const date = createElement("div", { class: "daily-date" });
     const condition = createElement("div", { class: "daily-condition" });
-    const max = createElement("div", { class: "daily-max" });
-    const min = createElement("div", { class: "daily-min" });
+    const minMaxTemp = createElement("div", { class: "daily-min-max-temp" });
+    const max = createElement("span", { class: "daily-max" });
+    const min = createElement("span", { class: "daily-min" });
 
-    date.textContent = forecast.date;
+    date.textContent = formatDayDate(forecast.date);
     const conditionIcon = generateConditionIcon(forecast.condition.code);
     condition.append(conditionIcon);
     max.textContent = forecast.max;
     min.textContent = forecast.min;
+    minMaxTemp.append(min, " | ", max);
 
-    day.append(date, condition, max, min);
+    day.append(date, condition, minMaxTemp);
     return day;
   };
 
   const loadDailyForecast = (wholeForecast, metric = true) => {
-    const forecastList = document.querySelector(".forecast");
+    const dailyForecast = createElement("div", { class: "daily-forecast" });
+
     for (const forecast of wholeForecast) {
       const forecastDay = forecast.day;
       const day = generateDayForecast({
         date: forecast.date,
         condition: forecastDay.condition,
-        min: metric ? forecastDay.mintemp_c + "°" : forecastDay.mintemp_f + "°",
-        max: metric
-          ? forecast.day.maxtemp_c + "°"
-          : forecastDay.mintemp_f + "°",
+        min:
+          Math.round(metric ? forecastDay.mintemp_c : forecastDay.mintemp_f) +
+          "°",
+        max:
+          Math.round(metric ? forecast.day.maxtemp_c : forecastDay.mintemp_f) +
+          "°",
       });
-      forecastList.append(day);
+      dailyForecast.append(day);
     }
+    const forecastList = document.querySelector(".forecast");
+    forecastList.append(dailyForecast);
   };
 
   const generateHourForecast = (hourForecast, metric = true) => {
-    const hour = createElement("div", { class: "hourly-hour" });
-    const time = createElement("div", { class: "hourly-hour" });
+    const hourlyHour = createElement("div", { class: "hourly-hour" });
+
+    const time = createElement("div", { class: "hourly-time" });
     const condition = createElement("div", { class: "hourly-condition" });
     const temp = createElement("div", { class: "hourly-temp" });
 
@@ -102,10 +119,10 @@ const WeatherUI = (() => {
     );
     condition.append(conditionIcon);
     temp.textContent =
-      (metric ? hourForecast.temp_c : hourForecast.temp_f) + "°";
+      Math.round(metric ? hourForecast.temp_c : hourForecast.temp_f) + "°";
 
-    hour.append(time, condition, temp);
-    return hour;
+    hourlyHour.append(time, condition, temp);
+    return hourlyHour;
   };
 
   const loadHourlyForecast = (wholeForecast, metric = true) => {

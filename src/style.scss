@@ -1,3 +1,5 @@
+$darkgray: #4e4e4e;
+
 :root {
   box-sizing: border-box;
   color: white;
@@ -26,6 +28,7 @@
 }
 
 .search {
+  background-color: $darkgray;
   width: 100%;
   min-width: 300px;
   margin-top: 10px;
@@ -40,7 +43,7 @@
   width: 100%;
   border: none;
   color: white;
-  background-color: black;
+  background-color: $darkgray;
 
   &:focus-visible {
     outline: none;
@@ -58,18 +61,19 @@
   color: white;
 }
 
-.daily-condition img,
-.hourly-condition img,
 .condition-icon img {
   height: 90px;
 }
 
 .current-weather-wrapper {
+  width: 100%;
   display: flex;
+  justify-content: space-around;
   gap: 20px;
 }
 
 .current-weather {
+  background-color: $darkgray;
   border: 1px solid white;
   border-radius: 5px;
   padding: 20px;
@@ -96,9 +100,58 @@
 }
 
 .current-details {
+  background-color: $darkgray;
   border: 1px solid white;
+  border-radius: 5px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.forecast-wrapper {
+  min-width: 300px;
+}
+
+.forecast {
+  max-width: 800px;
+}
+
+.hourly-forecast {
+  background-color: $darkgray;
+  overflow: scroll;
+  border: 1px solid white;
+  border-radius: 5px;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.hourly-time,
+.hourly-temp,
+.daily-date,
+.daily-min-max-temp {
+  text-align: center;
+}
+
+.daily-condition img,
+.hourly-condition img {
+  height: 64px;
+}
+
+.daily-forecast {
+  background-color: $darkgray;
+  border: 1px solid white;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.daily-min {
+  color: lightskyblue;
+}
+
+.daily-max {
+  color: red;
 }
