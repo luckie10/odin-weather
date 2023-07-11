@@ -1,7 +1,7 @@
 import { svgs } from "./assets/svg";
 import weatherConditions from "./conditioncode.json";
 import { createElement, removeAllChildren } from "./utils";
-import { format, isPast, isThisHour, isToday, isTomorrow } from "date-fns";
+import { format, isAfter, isSameHour, isSameDay } from "date-fns";
 
 const WeatherUI = (() => {
   const getIconName = (conditionCode, day) => {
@@ -55,11 +55,10 @@ const WeatherUI = (() => {
       `${currWeather.wind_degree}° ${currWeather.wind_dir}`;
   };
 
-  const formatDayDate = (stringDate) => {
-    const date = new Date(`${stringDate}T00:00:00`);
+  const formatDayDate = (time, localTime) => {
+    const date = new Date(`${time}T00:00:00`);
 
-    if (isToday(date)) return "Today";
-    else if (isTomorrow(date)) return "Tomorrow";
+    if (isSameDay(date, localTime)) return "Today";
     else return format(date, "E");
   };
 
@@ -72,7 +71,8 @@ const WeatherUI = (() => {
     const max = createElement("span", { class: "daily-max" });
     const min = createElement("span", { class: "daily-min" });
 
-    date.textContent = formatDayDate(forecast.date);
+    const localTime = new Date(forecast.localtime);
+    date.textContent = formatDayDate(forecast.date, localTime);
     const conditionIcon = generateConditionIcon(forecast.condition.code);
     condition.append(conditionIcon);
     max.textContent = forecast.max;
@@ -83,12 +83,14 @@ const WeatherUI = (() => {
     return day;
   };
 
-  const loadDailyForecast = (wholeForecast, metric = true) => {
     const dailyForecast = createElement("div", { class: "daily-forecast" });
+  const loadDailyForecast = (weather, metric = true) => {
+    const wholeForecast = weather.forecast.forecastday;
 
     for (const forecast of wholeForecast) {
       const forecastDay = forecast.day;
       const day = generateDayForecast({
+        localtime: weather.location.localtime,
         date: forecast.date,
         condition: forecastDay.condition,
         min:
@@ -125,24 +127,31 @@ const WeatherUI = (() => {
     return hourlyHour;
   };
 
-  const loadHourlyForecast = (wholeForecast, metric = true) => {
     const hourlyForecast = createElement("div", { class: "hourly-forecast" });
+  const loadHourlyForecast = (weather, metric = true) => {
+    const wholeForecast = weather.forecast.forecastday;
 
     for (const forecast of wholeForecast) {
       for (const hour of forecast.hour) {
         const time = new Date(hour.time);
-        if (!isPast(time) || isThisHour(time))
-          hourlyForecast.append(generateHourForecast(hour));
+        const localTime = new Date(weather.location.localtime);
+        if (isAfter(time, localTime) || isSameHour(time, localTime))
+          hourlyForecast.append(generateHourForecast(hour, metric));
       }
     }
     const forecastList = document.querySelector(".forecast");
     forecastList.append(hourlyForecast);
   };
 
+  const loadWeather = (weather, metric = true) => {
+    console.log(weather);
+    loadCurrent(weather);
+    loadHourlyForecast(weather);
+    loadDailyForecast(weather);
+  };
+
   return {
-    loadCurrent,
-    loadDailyForecast,
-    loadHourlyForecast,
+    loadWeather,
   };
 })();
 

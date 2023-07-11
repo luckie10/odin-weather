@@ -45,8 +45,9 @@ const LocationSearch = (function () {
   const searchHandler = async (event) => {
     // if (!validateLocation(searchInput.value)) return;
 
-    const forecast = await WeatherAPI.getForecast(searchInput.value);
-    WeatherUI.loadCurrent(forecast);
+    const forecast = await WeatherAPI.getForecast(searchInput.value, "no", 14);
+    WeatherUI.loadWeather(forecast);
+    event.target.value = "";
   };
 
   // TODO:
